@@ -1,17 +1,24 @@
-# This is a benchmark to test GPU performance: training time, train samples per second and Accuracy using Pytorch2.0.
+# Unleashing the Power of PyTorch 2.0: A Revolution in Deep Learning Performance
 
-# Clone the ripo and start the enviorment
-```
+Welcome to our GPU performance benchmark project! In this repository, we aim to showcase the remarkable improvements in training time, train samples per second, and accuracy using PyTorch 2.0. This project is inspired by Phil Schmid's [developer blog post](https://www.philschmid.de/getting-started-pytorch-2-0-transformers) and the official [PyTorch 2.0 announcement](https://pytorch.org/get-started/pytorch-2.0/#overview).
+
+To get started, follow these simple steps:
+
+## 1. Clone the repository and set up the environment
+```bash
+git clone https://github.com/technopremium/Pytroch2.0_GPU_benchmark.git
+cd Pytroch2.0_GPU_benchmark
 conda env create -f pytorch2.0_environment.yml
 conda activate pytorch2.0
 ```
+## 2. Run Jupyter Lab for an interactive experience
+```bash
+jupyter lab
+```
+## 3. Explore the trainer notebook
+Once inside Jupyter Lab, open the trainer.ipynb notebook and start running the cells to witness the power of PyTorch 2.0 in action!
 
-# Run jupyter lab to make things easier 
-`jupyter lab` 
-
-# Once inside the lab open the trainier.ipynb and start running cell by cell
-
+For more information and a detailed walkthrough, check out [our comprehensive blog post](https://bizonbizon.notion.site/Unleash-the-Power-of-PyTorch-2-0-A-Revolution-in-Deep-Learning-Performance-e0740febe9364abab8899dbe3a6021a6).
 
 Bizon 2023 - Ruben Roberto Copyright
-
 
