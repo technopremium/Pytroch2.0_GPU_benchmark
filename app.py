@@ -1,17 +1,17 @@
 import sys
+import logging
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QPlainTextEdit
 from PyQt5.QtCore import QThread, pyqtSignal
-import trainer  # Assuming the provided code is saved as trainer.py
-
+import trainer
 
 class TrainerThread(QThread):
-    output = pyqtSignal(str)
-
     def run(self):
         trainer.setup()
-        trainer_instance = trainer.setup_trainer()
-        trainer_instance.train()
+        self.trainer_instance = trainer.setup_trainer()
+        self.trainer_instance.train()
 
+    def stop(self):
+        self.trainer_instance.stop()
 
 class App(QMainWindow):
     def __init__(self):
@@ -28,20 +28,35 @@ class App(QMainWindow):
         self.start_benchmark_button = QPushButton("Start Benchmarking")
         self.start_benchmark_button.clicked.connect(self.start_benchmark)
 
+        self.stop_benchmark_button = QPushButton("Stop")
+        self.stop_benchmark_button.clicked.connect(self.stop_benchmark)
+
         layout.addWidget(self.console)
         layout.addWidget(self.start_benchmark_button)
+        layout.addWidget(self.stop_benchmark_button)
 
         container = QWidget()
         container.setLayout(layout)
         self.setCentralWidget(container)
 
+        # Redirect stdout to the console
+        sys.stdout = self
+
     def start_benchmark(self):
         self.trainer_thread = TrainerThread()
         self.trainer_thread.start()
 
-    def append_output(self, text):
+    def stop_benchmark(self):
+        self.pushButton.setEnabled(True)
+        self.pushButton_2.setEnabled(False)
+        self.trainer_thread.trainer_instance.stop()
+
+
+    def write(self, text):
         self.console.appendPlainText(text)
 
+    def flush(self):
+        pass
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
