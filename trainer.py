@@ -1,4 +1,5 @@
 import os
+import logging
 from random import randrange
 import numpy as np
 from huggingface_hub import login, HfFolder
@@ -11,10 +12,26 @@ from transformers import (
 )
 import evaluate
 
+class StoppableTrainer(Trainer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._stop_training = False
+
+    def stop(self):
+        self._stop_training = True
+
+    def training_step(self, model, inputs):
+        if self._stop_training:
+            raise RuntimeError("Training stopped.")
+        return super().training_step(model, inputs)
+
+
+# Configure the logger
+logging.basicConfig(level=logging.INFO)
 
 def setup():
     login(
-        token="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",  # ADD YOUR TOKEN HERE
+        token="xxxx",  # ADD YOUR TOKEN HERE
         add_to_git_credential=True,
     )
 
@@ -77,7 +94,7 @@ def setup_trainer():
         report_to="tensorboard",
     )
 
-    trainer = Trainer(
+    trainer = StoppableTrainer(
         model=model,
         args=training_args,
         train_dataset=tokenized_dataset["train"],
@@ -89,6 +106,9 @@ def setup_trainer():
 
 
 if __name__ == "__main__":
+    print("Setting up...")
     setup()
-    trainer = setup_trainer()
-    trainer.train()
+    print("Setting up trainer...")
+    trainer_instance = setup_trainer()
+    print("Starting training...")
+    trainer_instance.train()
