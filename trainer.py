@@ -11,8 +11,9 @@ from transformers import (
     TrainingArguments,
 )
 import evaluate
+from transformers import Trainer as HFTrainer
 
-class StoppableTrainer(Trainer):
+class StoppableTrainer(HFTrainer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._stop_training = False
@@ -31,12 +32,12 @@ logging.basicConfig(level=logging.INFO)
 
 def setup():
     login(
-        token="xxxx",  # ADD YOUR TOKEN HERE
+        token="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",  # ADD YOUR TOKEN HERE
         add_to_git_credential=True,
     )
 
 
-def setup_trainer():
+def setup_trainer(settings):
     # Load dataset
     dataset_id = "banking77"
     raw_dataset = load_dataset(dataset_id)
@@ -76,12 +77,12 @@ def setup_trainer():
     repository_id = "bert-base-banking77-pt2"
     training_args = TrainingArguments(
         output_dir=repository_id,
-        per_device_train_batch_size=16,
-        per_device_eval_batch_size=8,
-        learning_rate=5e-5,
-        num_train_epochs=3,
-        bf16=True,
-        torch_compile=True,
+        per_device_train_batch_size=settings["per_device_train_batch_size"],
+        per_device_eval_batch_size=settings["per_device_eval_batch_size"],
+        learning_rate=settings["learning_rate"],
+        num_train_epochs=settings["num_train_epochs"],
+        bf16=settings["bf16"],
+        torch_compile=settings["torch_compile"],
         optim="adamw_torch_fused",
         logging_dir=f"{repository_id}/logs",
         logging_strategy="steps",
@@ -94,7 +95,7 @@ def setup_trainer():
         report_to="tensorboard",
     )
 
-    trainer = StoppableTrainer(
+    trainer = Trainer(
         model=model,
         args=training_args,
         train_dataset=tokenized_dataset["train"],
@@ -104,11 +105,21 @@ def setup_trainer():
 
     return trainer
 
-
 if __name__ == "__main__":
     print("Setting up...")
     setup()
+
+    # Default settings
+    settings = {
+        "per_device_train_batch_size": 16,
+        "per_device_eval_batch_size": 8,
+        "learning_rate": 5e-5,
+        "num_train_epochs": 3,
+        "bf16": True,
+        "torch_compile": True,
+    }
+
     print("Setting up trainer...")
-    trainer_instance = setup_trainer()
+    trainer_instance = setup_trainer(settings)
     print("Starting training...")
     trainer_instance.train()
