@@ -27,6 +27,10 @@ docker build -t pytorch2-gpu-benchmark .
 docker run --gpus all -it -it --shm-size=1g --ulimit memlock=-1  --ulimit stack=67108864 --rm pytorch2-gpu-benchmark
 ```
 
+# Important note
+
+This code only runs in single GPUs, if your system has more than 1 gpu then set the container to run on a specific gpu, example: docker run --gpus '"device=0"' -it --rm pytorch2-gpu-benchmark. 
+
 For more information and a detailed walkthrough, check out [our comprehensive blog post](https://bizonbizon.notion.site/Unleash-the-Power-of-PyTorch-2-0-A-Revolution-in-Deep-Learning-Performance-e0740febe9364abab8899dbe3a6021a6).
 
 Bizon 2023 - Ruben Roberto Copyright
